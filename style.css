@@ -10,3 +10,11 @@
 section {
   padding-top: 5rem;
 }
+
+.img-gallery {
+  width: 330px;
+}
+
+#gallery .row > * {
+  padding: 0;
+}
