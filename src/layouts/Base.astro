@@ -1,5 +1,6 @@
 ---
 import '@fontsource-variable/newsreader';
+import '@fontsource-variable/newsreader/wght-italic.css';
 import '../styles/global.css';
 
 interface Props {
@@ -55,7 +56,7 @@ const isCurrent = (href: string) =>
   <body>
     <header class="masthead">
       <a class="brand" href="/">Fahmi Nugroho</a>
-      <nav>
+      <nav aria-label="Main">
         {
           nav.map((item) => (
             <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>

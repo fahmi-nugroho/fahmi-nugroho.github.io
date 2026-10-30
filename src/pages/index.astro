@@ -12,14 +12,14 @@ const fmt = (d: Date) =>
   d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 ---
 
-<Base>
-  <p class="lede">
+<Base title="Fahmi Nugroho — Software engineer">
+  <h1 class="lede">
     I'm Fahmi Nugroho, a software engineer from Indonesia. I build web applications, work close to
     Linux and databases, and write down what I learn so the next attempt is faster.
-  </p>
-  <p class="muted">
-    Currently interested in web development, system design, PostgreSQL, and self-hosting. See
-    <a href="/about/">about</a> for more, or <a href="mailto:fahminugroho23@gmail.com">email me</a>.
+  </h1>
+  <p>
+    Currently interested in web development, system design, PostgreSQL, and self-hosting.
+    <a href="mailto:fahminugroho23@gmail.com">Email me</a> or read more <a href="/about/">about me</a>.
   </p>
 
   <h2>Writing</h2>
@@ -46,10 +46,11 @@ const fmt = (d: Date) =>
     {
       projects.map((project) => (
         <li>
-          <a class="title" href="/projects/">
-            {project.data.title}
+          <a class="title" href={project.data.repo}>
+            {project.data.title} <span aria-hidden="true">↗</span>
           </a>
           <p>{project.data.description}</p>
+          {project.data.stack.length > 0 && <p class="meta">{project.data.stack.join(' · ')}</p>}
         </li>
       ))
     }

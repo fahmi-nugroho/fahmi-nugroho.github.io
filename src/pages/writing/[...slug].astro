@@ -3,25 +3,35 @@ import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('writing', ({ data }) => !data.draft);
-  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+  const posts = (await getCollection('writing', ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+  );
+  return posts.map((post, i) => ({
+    params: { slug: post.id },
+    props: { post, newer: posts[i - 1], older: posts[i + 1] },
+  }));
 }
 
-const { post } = Astro.props;
+const { post, newer, older } = Astro.props;
 const { Content } = await render(post);
-const date = post.data.date.toLocaleDateString('en-GB', {
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-  timeZone: 'UTC',
-});
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const date = fmt(post.data.date);
 ---
 
 <Base heading={post.data.title} description={post.data.description}>
-  <article>
+  <article lang={post.data.lang}>
     <h1>{post.data.title}</h1>
     <p class="meta">
       <time datetime={post.data.date.toISOString()}>{date}</time>
+      {
+        post.data.updated && (
+          <>
+            {' · Updated '}
+            <time datetime={post.data.updated.toISOString()}>{fmt(post.data.updated)}</time>
+          </>
+        )
+      }
       {post.data.lang === 'id' && ' · Indonesian'}
       {
         post.data.tags.length > 0 && (
@@ -39,4 +49,29 @@ const date = post.data.date.toLocaleDateString('en-GB', {
     </p>
     <Content />
   </article>
+  <nav class="post-nav" aria-label="More writing">
+    <a href="/writing/">← All writing</a>
+    {newer && <a href={`/writing/${newer.id}/`}>Newer: {newer.data.title}</a>}
+    {older && <a href={`/writing/${older.id}/`}>Older: {older.data.title}</a>}
+  </nav>
+
+  <script>
+    // Add a copy button to every code block.
+    document.querySelectorAll('pre.astro-code').forEach((pre) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'copy';
+      btn.textContent = 'Copy';
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(pre.textContent ?? '');
+          btn.textContent = 'Copied';
+        } catch {
+          btn.textContent = 'Press Ctrl+C';
+        }
+        setTimeout(() => (btn.textContent = 'Copy'), 1500);
+      });
+      pre.after(btn);
+    });
+  </script>
 </Base>

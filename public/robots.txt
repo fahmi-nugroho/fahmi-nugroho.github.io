@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fahmi-nugroho.github.io/sitemap-index.xml

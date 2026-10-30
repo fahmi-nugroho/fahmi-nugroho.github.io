@@ -12,6 +12,8 @@ for (const post of posts) {
   byYear.set(year, [...(byYear.get(year) ?? []), post]);
 }
 
+const tags = [...new Set(posts.flatMap((post) => post.data.tags))].sort();
+
 const fmt = (d: Date) =>
   d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
 ---
@@ -19,6 +21,20 @@ const fmt = (d: Date) =>
 <Base title="Writing — Fahmi Nugroho" description="Notes on web development, Linux, and the tools I keep coming back to.">
   <h1>Writing</h1>
   <p class="lede">Notes on web development, Linux, and the tools I keep coming back to.</p>
+
+  {
+    tags.length > 0 && (
+      <p class="meta">
+        Topics:{' '}
+        {tags.map((tag, i) => (
+          <>
+            {i > 0 && ', '}
+            <a href={`/tags/${tag}/`}>{tag}</a>
+          </>
+        ))}
+      </p>
+    )
+  }
 
   {
     posts.length === 0 && <p class="muted">Nothing published yet.</p>

@@ -14,19 +14,15 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
       projects.map((project) => (
         <li>
           <a class="title" href={project.data.repo}>
-            {project.data.title}
+            {project.data.title} <span aria-hidden="true">↗</span>
           </a>
           <p>{project.data.description}</p>
           {project.data.stack.length > 0 && <p class="meta">{project.data.stack.join(' · ')}</p>}
-          <p class="meta">
-            <a href={project.data.repo}>Source</a>
-            {project.data.demo && (
-              <>
-                {' · '}
-                <a href={project.data.demo}>Live</a>
-              </>
-            )}
-          </p>
+          {project.data.demo && (
+            <p class="meta">
+              <a href={project.data.demo}>Live ↗</a>
+            </p>
+          )}
         </li>
       ))
     }

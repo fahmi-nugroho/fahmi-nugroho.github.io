@@ -6,6 +6,6 @@ export default defineConfig({
   site: 'https://fahmi-nugroho.github.io',
   integrations: [sitemap()],
   markdown: {
-    shikiConfig: { themes: { light: 'github-light', dark: 'github-dark' } },
+    shikiConfig: { themes: { light: 'github-light', dark: 'github-dark-high-contrast' } },
   },
 });
