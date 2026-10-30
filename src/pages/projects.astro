@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<Base title="Projects — Fahmi Nugroho" description="Things I have built, and what I learned building them.">
+  <h1>Projects</h1>
+  <p class="lede">A few things I have built, chosen for what they taught me rather than how they look.</p>
+
+  <ul class="entries">
+    {
+      projects.map((project) => (
+        <li>
+          <a class="title" href={project.data.repo}>
+            {project.data.title}
+          </a>
+          <p>{project.data.description}</p>
+          {project.data.stack.length > 0 && <p class="meta">{project.data.stack.join(' · ')}</p>}
+          <p class="meta">
+            <a href={project.data.repo}>Source</a>
+            {project.data.demo && (
+              <>
+                {' · '}
+                <a href={project.data.demo}>Live</a>
+              </>
+            )}
+          </p>
+        </li>
+      ))
+    }
+  </ul>
+
+  <p class="meta">
+    Everything else, coursework and experiments included, lives on
+    <a href="https://github.com/fahmi-nugroho?tab=repositories">GitHub</a>.
+  </p>
+</Base>

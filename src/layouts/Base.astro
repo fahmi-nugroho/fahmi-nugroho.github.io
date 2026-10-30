@@ -1,0 +1,81 @@
+---
+import '@fontsource-variable/newsreader';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Set for entry pages so <title> leads with the entry title. */
+  heading?: string;
+}
+
+const { title, description = 'Software engineer writing about web development, Linux, and systems.', heading } = Astro.props;
+
+const pageTitle = heading ? `${heading} — Fahmi Nugroho` : title ? `${title}` : 'Fahmi Nugroho';
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const nav = [
+  { href: '/', label: 'Home' },
+  { href: '/writing/', label: 'Writing' },
+  { href: '/projects/', label: 'Projects' },
+  { href: '/about/', label: 'About' },
+];
+// Set to your GoatCounter site code (e.g. "fahminugroho") to enable analytics.
+const GOATCOUNTER_CODE = '';
+const isCurrent = (href: string) =>
+  href === '/' ? Astro.url.pathname === '/' : Astro.url.pathname.startsWith(href);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title="Fahmi Nugroho — Writing" href="/rss.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <slot name="head" />
+    {
+      GOATCOUNTER_CODE && (
+        <script
+          is:inline
+          data-goatcounter={`https://${GOATCOUNTER_CODE}.goatcounter.com/count`}
+          async
+          src="//gc.zgo.at/count.js"
+        />
+      )
+    }
+  </head>
+  <body>
+    <header class="masthead">
+      <a class="brand" href="/">Fahmi Nugroho</a>
+      <nav>
+        {
+          nav.map((item) => (
+            <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site">
+      <ul>
+        <li><a href="mailto:fahminugroho23@gmail.com">Email</a></li>
+        <li><a href="https://github.com/fahmi-nugroho" rel="me">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/fahmi-nugroho-7a1a6b1a0/" rel="me">LinkedIn</a></li>
+        <li><a href="/rss.xml">RSS</a></li>
+      </ul>
+      <p>© {new Date().getFullYear()} Fahmi Nugroho. Built with Astro.</p>
+    </footer>
+  </body>
+</html>

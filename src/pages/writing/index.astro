@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+const posts = (await getCollection('writing', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+const byYear = new Map<number, typeof posts>();
+for (const post of posts) {
+  const year = post.data.date.getUTCFullYear();
+  byYear.set(year, [...(byYear.get(year) ?? []), post]);
+}
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+---
+
+<Base title="Writing — Fahmi Nugroho" description="Notes on web development, Linux, and the tools I keep coming back to.">
+  <h1>Writing</h1>
+  <p class="lede">Notes on web development, Linux, and the tools I keep coming back to.</p>
+
+  {
+    posts.length === 0 && <p class="muted">Nothing published yet.</p>
+  }
+
+  {
+    [...byYear.entries()].map(([year, entries]) => (
+      <>
+        <h2>{year}</h2>
+        <ul class="entries">
+          {entries.map((post) => (
+            <li>
+              <a class="title" href={`/writing/${post.id}/`}>
+                {post.data.title}
+              </a>
+              <p class="meta">
+                {fmt(post.data.date)}
+                {post.data.lang === 'id' && ' · Indonesian'}
+              </p>
+              <p>{post.data.description}</p>
+            </li>
+          ))}
+        </ul>
+      </>
+    ))
+  }
+
+  <p class="meta"><a href="/rss.xml">Subscribe via RSS</a></p>
+</Base>
